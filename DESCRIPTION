@@ -2,13 +2,13 @@ Package: miscutils
 Title: Misc functions for R
 Version: 0.0.0.9000
 Authors@R: person("Alex", "Génin", email = "alex@lecairn.org", role = c("aut", "cre"))
-Description: A bunch of different things. 
-Depends: R (>= 3.4.1)
+Description: A bunch of different things.
+Depends: R (>= 3.4.0)
 Imports:
-  R.cache, 
-  plyr, 
-  devtools, 
-  doParallel, 
+  R.cache,
+  plyr,
+  devtools,
+  doParallel,
   foreach
 License: WTFPL
 Encoding: UTF-8
