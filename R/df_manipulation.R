@@ -26,7 +26,7 @@ vec2df <- function(X) {
 # Left join 
 #'@export
 ljoin <- function(a, b, ...) { 
-  plyr::join(a, b, type = "left", match = "first")
+  plyr::join(a, b, type = "left", match = "first", ...)
 }
 
 
