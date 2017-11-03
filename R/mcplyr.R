@@ -8,6 +8,18 @@ mcddply <- function(df, formula, fun, ..., .progress = NULL, .parallel = NULL) {
   require(plyr)
   require(parallel)
   
+  # Apply function to pieces
+  result_list <- mcdlply(df, formula, fun, ..., .progress = .progress, .parallel = NULL)
+  
+  # Bind list 
+  rbind.fill(result_list)
+}
+
+#'@export
+mcdlply <- function(df, formula, fun, ..., .progress = NULL, .parallel = NULL) { 
+  require(plyr)
+  require(parallel)
+  
   mc.cores <- options("mc.cores")$mc.cores
   if ( is.null(mc.cores) || mc.cores < 2 ) { 
     return( ddply(df, formula, fun, ..., .progress = .progress) )
@@ -21,11 +33,5 @@ mcddply <- function(df, formula, fun, ..., .progress = NULL, .parallel = NULL) {
   df_split <- dlply(df, formula, identity)
   
   # Apply function to pieces
-  result_list <- mclapply(df_split, fun, ...)
-  
-  # Bind list 
-  result <- rbind.fill(result_list)
-  
-  # Return 
-  return(result)
+  mclapply(df_split, fun, ...)
 }
