@@ -50,19 +50,24 @@ runsim.simu_plan <- function(simlist, simfun,
   # All elements in simlist have the same name if it has the class simu_plan, 
   # so we just pick the first one. 
   plan_names <- names(simlist[[1]])
-  if ( !.ignore_extra & ! all(plan_names %in% all_argnames) ) { 
+  if ( .check && !.ignore_extra && ! all(plan_names %in% all_argnames) ) { 
       extra_names <- plan_names[ ! plan_names %in% all_argnames]
       stop('Extra parameters in the simulation plan: ', 
            paste0(extra_names, collapse = ", "))
   }
   
-  if ( ! all(argnames %in% plan_names) ) { 
+  if ( .check && ! all(argnames %in% plan_names) ) { 
       missing_names <- argnames[ ! argnames %in% plan_names ]
       stop('Following parameters are missing in the simulation plan: ', 
            paste0(missing_names, collapse = ", "))
   }
-
-  advllply(simlist, lazy(simfun), ...)
+  
+  # Modify the function a bit so it works with llply
+  simfunlist <- function(list) { 
+    do.call(simfun, list)
+  }
+  
+  advllply(simlist, simfunlist, ...)
   
 #   advllply(simlist, 
   

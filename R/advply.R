@@ -11,7 +11,7 @@ advllply <- function(tasks, .fun,
                      .ompcores   = 1, 
                      .psockcores = detectCores(), 
                      .exceed_cores = FALSE, 
-                     .progress = "none", 
+                     .progress = "time", 
                      .progress_every = .psockcores, 
                      .parjob_args = list(), 
                      .parallel = FALSE, 
@@ -28,32 +28,34 @@ advllply <- function(tasks, .fun,
          'Set .exceed_cores to TRUE to disable this check')
   }
   
-  if ( .progress == "none" ) { 
-    .progress_every <- length(tasks)
-  }
-  
   # Save multicore options 
-  old_.ompcores <- Sys.getenv("OMP_NUM_THREADS")
+  old.ompcores <- Sys.getenv("OMP_NUM_THREADS")
   Sys.setenv(OMP_NUM_THREADS = .ompcores)
-  on.exit(Sys.setenv(OMP_NUM_THREADS = old_.ompcores))
+  on.exit(Sys.setenv(OMP_NUM_THREADS = old.ompcores))
   
   # Set psock options 
   psock_ok <- do.call(parjob, c(list(cores = .psockcores), .parjob_args))
   if (psock_ok) { 
-    clusterExport(cl = .LOCALCLUST, varlist = ".fun", envir = parent.frame())
+    clusterExport(cl = .LOCALCLUST, varlist = ".fun", 
+                  envir = environment())
   }
   
-  # Split up list 
-  groups <- floor( seq_along(tasks) / ( (1+length(tasks)) / .progress_every) )
+  # Split up list into groups for progress reporting
+  if ( .progress == "none" ) { 
+    groups <- rep(0, length(tasks))
+  } else { 
+    groups <- floor( seq_along(tasks) / ( (1+length(tasks)) / .progress_every) )
+  }
   tasksplit <- llply(as.list(unique(groups)), function(grp) { 
     tasks[groups == grp]
   })
   
   # Compute
+  parop <- if ( psock_ok ) { `%dopar%` } else { `%do%` }
   all_results <- llply(tasksplit, function(task) { 
-    foreach(o = task) %dopar% { 
+    parop(foreach(o = task), { 
       .fun(o,...)
-    }
+    })
   }, .progress = .progress)
   
   # Flatten list 
@@ -62,10 +64,3 @@ advllply <- function(tasks, .fun,
   return(all_results)
 }
 
-
-#'@export 
-run_simus <- function(simu_plan, simu_fun) { 
-  
-  browser()
-  
-}
