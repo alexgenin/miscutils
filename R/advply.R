@@ -40,7 +40,7 @@ advllply <- function(tasks, .fun,
   # Set psock options 
   psock_ok <- do.call(parjob, c(list(cores = .psockcores), .parjob_args))
   if (psock_ok) { 
-    clusterExport(cl = .LOCALCLUST, varlist = "fun", envir = parent.frame())
+    clusterExport(cl = .LOCALCLUST, varlist = ".fun", envir = parent.frame())
   }
   
   # Split up list 
@@ -52,7 +52,7 @@ advllply <- function(tasks, .fun,
   # Compute
   all_results <- llply(tasksplit, function(task) { 
     foreach(o = task) %dopar% { 
-      fun(o,...)
+      .fun(o,...)
     }
   }, .progress = .progress)
   

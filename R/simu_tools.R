@@ -21,7 +21,7 @@ make_simuplan <- function(list, varying = NULL) {
     })
   
   # Now we add to all simulations the fixed the parameters 
-  simuplan <- lapply(simuplan, function(varpars) { 
+  simuplan <- lapply( simuplan, function(varpars) { 
       c(varpars, list[!names(list) %in% varying])
     })
   
@@ -43,7 +43,6 @@ runsim.simu_plan <- function(simlist, simfun,
                              ...) { 
   
   # Check that simulation/function args match
-  browser()
   all_argnames <- as.list(args(simfun))
   argnames <- names(Filter(is.symbol, all_argnames))
   all_argnames <- names(all_argnames)[-length(all_argnames)]
@@ -62,8 +61,8 @@ runsim.simu_plan <- function(simlist, simfun,
       stop('Following parameters are missing in the simulation plan: ', 
            paste0(missing_names, collapse = ", "))
   }
-  browser()
-  advllply(simlist, simfun, ...)
+
+  advllply(simlist, lazy(simfun), ...)
   
 #   advllply(simlist, 
   
