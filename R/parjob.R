@@ -15,7 +15,8 @@
 parjob <- function(cores = detectCores()-1, # Number of local cores asked for
                    reset = FALSE,           # reset the local cluster before launching
                    supdir = NULL,           # other directories to scan for devtools packages 
-                   export = TRUE,           # export all variables found in parent evir
+                   export_parent = TRUE,    # export all variables found in parent evir
+                   export_envs = list(),    # export vars in those environments 
                    outfile = "/dev/null",   # log file for workers' stdout
                    cachedir = paste0(wd, ".cache"), 
                    wd    = getwd()) {       # working directory 
@@ -126,11 +127,19 @@ parjob <- function(cores = detectCores()-1, # Number of local cores asked for
       }
     }
     
-    # Export environments, currently just exports the parent environment
-    if ( export ) { 
-      vars <- ls(envir = parent.frame())
+    # Make a list of envirs to export
+    if ( !is.list(export_envs) ) { 
+      export_envs <- list(export_envs)
+    }
+    if ( export_parent ) { 
+      export_envs <- c(export_envs, parent.frame())
+    }
+    # Export environments 
+    for ( env in export_envs ) { 
+      vars <- ls(envir = env)
       clusterExport(.LOCALCLUST, varlist = vars, envir = parent.frame())
     }
+    
     return(TRUE)
   }
 }
