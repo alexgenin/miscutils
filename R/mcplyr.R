@@ -33,5 +33,9 @@ mcdlply <- function(df, formula, fun, ..., .progress = NULL, .parallel = NULL) {
   df_split <- dlply(df, formula, identity)
   
   # Apply function to pieces
-  mclapply(df_split, fun, ...)
+  res <- mclapply(df_split, fun, ...)
+  
+  list_to_dataframe(res, attr(df_split, "split_labels"), 
+                    .id = NULL, 
+                    id_as_factor = FALSE)
 }

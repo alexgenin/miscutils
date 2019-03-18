@@ -9,6 +9,12 @@ make_simuplan <- function(parlist, varying = NULL) {
   # Resolve varying params in the context of the list
   curenvir <- environment()
   
+  # Check that all varying variables are in parlist 
+  in_parlist <- varying %in% names(parlist)
+  if ( ! all(in_parlist) ) { 
+    stop(paste(varying, collapse = ", "), "not found in simulation plan")
+  }
+  
   # Classify vars 
   allvars <- names(parlist)
   fixed <- allvars[!( allvars %in% varying) & ! sapply(parlist, is.formula)]
@@ -30,7 +36,7 @@ make_simuplan <- function(parlist, varying = NULL) {
   all_combi <- do.call(expand.grid, nelems)
   simuplan <- apply(all_combi, 1, function(simuline) { 
       pars <- lapply(as.list(varying), function(x) { 
-          # This is a bit cryptic but that selects the corresponding elements 
+          # This is a bit cryptic but it selects the corresponding elements 
           # in the input parlist as specified by simuline
           parlist[[x]][[simuline[x]]]
         })
