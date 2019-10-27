@@ -5,7 +5,6 @@ Authors@R: person("Alex", "Génin", email = "alex@lecairn.org", role = c("aut", 
 Description: A bunch of different things.
 Depends: R (>= 3.4.0)
 Imports:
-  R.cache,
   plyr,
   devtools,
   doParallel,
@@ -13,4 +12,4 @@ Imports:
 License: WTFPL
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.1

@@ -29,16 +29,11 @@ ljoin <- function(a, b, ...) {
   plyr::join(a, b, type = "left", match = "first", ...)
 }
 
-
-# ORDINATION TOOLS 
-# ----------------
-
 # Returns empty sites
 #'@export
 isempty <- function(table) { 
   apply(table, 1, sum) == 0
 }
-
 
 # PLYR SHORTCUTS
 # --------------
@@ -70,8 +65,8 @@ except <- function(df, ...) {
 #'@export
 autosummarise <- function(df, formula, 
                           summ_fact = 'first', 
-                          drop_var_fact = TRUE, 
                           summ_nums = 'mean', 
+                          drop_var_fact = TRUE, 
                           na.rm = FALSE, 
                           ...) { 
   
@@ -114,7 +109,7 @@ autosummarise <- function(df, formula,
     to_keep <- names(df) # all cols
   }
   
-  tab <- ldply(tab, function(o) o[['values']])[ ,to_keep]
+  tab <- plyr::ldply(tab, function(o) o[['values']])[ ,to_keep]
   return(tab)
 }
 

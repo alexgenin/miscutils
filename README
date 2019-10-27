@@ -13,18 +13,6 @@ risk.
       except:              get columns with names not in the provided vector 
       autosummarise:       autosummarise a data.frame
     
-  * fcache.R
-      fcache:              cache the result of a function
-      with_fcache:         run a function with caching enabled
-      
-  * mcplyr.R:
-      mcddply, mcdlply:    same than plyr but does parallel computation through 
-                             FORK-type clusters (unix only)
-      
-  * parjob.R: 
-      parjob:              prepare/update a cluster before computing something 
-                             in parallel
-  
   * random_matrices.R:
       rmat:                create a matrix filled with random numbers
       rsqmat:              create a square matrix filled with random numbers
@@ -32,3 +20,6 @@ risk.
   * sswitch.R:
       stringswitch:        same as switch(...) but vectorized
 
+  * graphout.R: 
+      graphout: write the output of plotting functions into a local file 
+        (typically, Rplots.pdf)
